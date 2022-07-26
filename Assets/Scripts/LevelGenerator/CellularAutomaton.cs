@@ -9,8 +9,10 @@ namespace DarkDungeon
         #region Fields
         CellState[][] stateField;
         List<Cave> caves; 
+
         int selector = 4;
         int aliveCount = 5;
+        int maxRandom = 8;
         #endregion
 
         #region Properties
@@ -29,7 +31,7 @@ namespace DarkDungeon
             int height = stateField.Length;
             int width = stateField[0].Length;
 
-            for(int i = 0; i < width; i ++)
+            for (int i = 0; i < width; i ++)
             {
                 for (int j = 0; j < height; j++)
                 {
@@ -99,13 +101,15 @@ namespace DarkDungeon
                                 continue;
                             }
                         }
-                        if(NeedToAddBorder(i,j))
+
+                        if (NeedToAddBorder(i,j))
                         {
                             border.Add(new Point(i + leaf.x, j + leaf.y));
                         }
                     }    
                 }
             }
+
             return walls;
         }
         #endregion
@@ -118,11 +122,13 @@ namespace DarkDungeon
             for (int j = 1; j < count; j++)
             {
                 bool isAdded = false;
+
                 foreach (Cave cave in caves)
                 {
                     cave.TryToAddCaveLine(caveLines[j], out isAdded);
                     if (isAdded) break;
                 }
+
                 if (!isAdded)
                 {
                     Cave cave = new Cave();
@@ -140,6 +146,7 @@ namespace DarkDungeon
                 for (int j = 0; j < caves.Count; j++)
                 {
                     if (i == j) continue;
+
                     if (caves[i].CanMergeCaves(caves[j]))
                     {
                         caves[i].MergeCaves(caves[j]);
@@ -161,6 +168,7 @@ namespace DarkDungeon
         void TryToEqualWithPassage(Leaf leaf, int i, int j, out bool isEqual)
         {
             int passagePoint = 0;
+
             Parallel.ForEach(leaf.Passages, passage =>
             {
                 if (i + leaf.x >= passage.x && i + leaf.x < passage.x + passage.width)
@@ -172,21 +180,26 @@ namespace DarkDungeon
                     }
                 }
             });
+
             isEqual = passagePoint > 0 ? true : false;
         }
 
         void SetCellState(int x, int y)
         {
-            int randomInt = UnityEngine.Random.Range(0, 8);
+            int randomInt = UnityEngine.Random.Range(0, maxRandom);
+
             if (Enum.IsDefined(typeof(CellState), randomInt))
             {
                 CellState cellState = (CellState)randomInt;
-                if(cellState == CellState.definitelyDead)
+
+                if (cellState == CellState.definitelyDead)
                 {
                     cellState = CellState.dead;
                 }
+
                 stateField[y][x] = cellState;
             }
+
             else
             {
                 bool random = UserRandom.RandomBool();
@@ -227,6 +240,7 @@ namespace DarkDungeon
                    }
                }
             });
+
             stateField = cellStates;
         }
 
@@ -264,7 +278,9 @@ namespace DarkDungeon
                     }
                 });
             }
+
             dead = deadCells;
+
             return count;
         }       
 
@@ -286,9 +302,10 @@ namespace DarkDungeon
             int width = stateField[0].Length;
             int counter = 0;
 
-            for(int i =0; i < width; i ++)
+            for(int i = 0; i < width; i ++)
             {
                counter++;
+
                for (int j = 0; j < height; j++)
                {
                    if (stateField[j][i] == CellState.dead || stateField[j][i] == CellState.definitelyDead)
@@ -308,6 +325,7 @@ namespace DarkDungeon
                        {
                            caveLines[caveLines.Count - 1].IncreaseDiffenetlyAliveCount();
                        }
+
                        caveLines[caveLines.Count - 1].AddPoint(i, j);
                    }
                }
@@ -331,15 +349,22 @@ namespace DarkDungeon
         bool NeedToAddBorder(int x, int y)
         {
             if (y == stateField.Length - 1) return false;
+
             if (x != 0)
             {
                 if (stateField[y][x - 1] == CellState.definitelyAlive || stateField[y][x - 1] == CellState.alive) return true;
             }
+
             if (x != stateField[0].Length - 1)
             {
                 if (stateField[y][x + 1] == CellState.definitelyAlive || stateField[y][x + 1] == CellState.alive) return true;
             }
-            if (stateField[y + 1][x] == CellState.definitelyAlive || stateField[y + 1][x] == CellState.alive) return true;
+
+            if (stateField[y + 1][x] == CellState.definitelyAlive || stateField[y + 1][x] == CellState.alive)
+            { 
+                return true; 
+            }
+
             return false;
         }
         #endregion

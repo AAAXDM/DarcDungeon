@@ -7,20 +7,23 @@ namespace DarkDungeon
     {
         #region Fields
         const int minLeafSize = 15;
-        bool isFinalLeaf;
-        int minRoomSize = 8;
-        int maxRoomSize = 13;
+
         UserRect room;
         List<UserRect> passages;
         Leaf leftChild;
         Leaf rightChild;
         Point[] allPoints;
         CellularAutomaton cellularAutomaton;
+
+        int minRoomSize = 8;
+        int maxRoomSize = 13;
+        bool isFinalLeaf;
+
+        public readonly Vector2 center;
         public readonly int x;
         public readonly int y;
         public readonly int width;
         public readonly int height;
-        public readonly Vector2 center;
         #endregion
 
         #region Properties
@@ -46,6 +49,7 @@ namespace DarkDungeon
             center.x = x + (float)width / 2;
             center.y = y + (float)height / 2;
             passages = new List<UserRect>();
+
             CalculateAllPoints();
         }
 
@@ -60,22 +64,28 @@ namespace DarkDungeon
                 isFinalLeaf = false;
                 return false;
             }
+
             if (width > height && (float)(width / height) >= 1.25)
             {
                 hSplit = false;
             }
+
             else if (height > width && (float)(height / width) >= 1.25)
             {
                 hSplit = true;
             }
+
             maxSplitSize = (hSplit ? height : width) - minLeafSize;
+
             if (maxSplitSize <= minLeafSize)
             {
                 isFinalLeaf = true;
                 return false;
             }
+
             split = Random.Range(minLeafSize, maxSplitSize + 1);
-            if(hSplit)
+
+            if (hSplit)
             {
                 leftChild = new Leaf(x, y,width,split);
                 rightChild = new Leaf(x,y + split,width,height - split);
@@ -85,6 +95,7 @@ namespace DarkDungeon
                 leftChild = new Leaf(x, y, split, height);
                 rightChild = new Leaf(x + split, y, width - split, height);
             }
+
             return  true;
         }
 

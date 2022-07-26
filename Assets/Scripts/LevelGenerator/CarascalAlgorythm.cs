@@ -32,7 +32,7 @@ namespace DarkDungeon
             }
             else
             {
-                foreach(Edge edge in graph.Edges)
+                foreach (Edge edge in graph.Edges)
                 {
                     if (!Contains(edge))
                     {
@@ -53,7 +53,7 @@ namespace DarkDungeon
 
         public void MergeSets(int a, int b)
         {            
-            foreach(Vector2 vertex in sets[b].UsingVretexes)
+            foreach (Vector2 vertex in sets[b].UsingVretexes)
             {
                 sets[a].AddUsingVertex(vertex);
             }          
@@ -62,7 +62,7 @@ namespace DarkDungeon
 
         public bool CanUseEdge(Edge edge)
         {
-            foreach(Set set in sets)
+            foreach (Set set in sets)
             {
                 bool isContainsA = set.Contains(edge.vertexA);
                 bool isContainsB = set.Contains(edge.vertexB);
@@ -99,7 +99,7 @@ namespace DarkDungeon
             int count = edges.Count;
             Edge edgetoDelete = null;
 
-            Parallel.For(0, count, (i, state) =>
+            Parallel.For (0, count, (i, state) =>
              {
                  if (edge.Equals(edges[i]))
                  {

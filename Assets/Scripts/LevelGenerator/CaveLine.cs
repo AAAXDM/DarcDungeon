@@ -7,6 +7,7 @@ namespace DarkDungeon
     {
         #region Fields
         List<int> cavePoints;
+
         int diffenetlyAliveCount;
         int x;
         #endregion
@@ -49,6 +50,7 @@ namespace DarkDungeon
                     }
                 }
             }
+
             return false;
         }
         public int CompareTo(CaveLine other)

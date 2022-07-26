@@ -7,6 +7,7 @@ namespace DarkDungeon
     {
         #region Fields
         List<CaveLine> caveLines;
+
         int diffenetlyAliveCount;
         int maxX;
         #endregion
@@ -35,13 +36,19 @@ namespace DarkDungeon
         {
             caveLines.Add(caveLine);
             diffenetlyAliveCount += caveLine.DiffenetlyAliveCount;
-            maxX = caveLine.X;
+            maxX = caveLine.X > maxX ? caveLine.X : maxX;
         }
 
         public bool CanMergeCaves(Cave cave)
         {
-            CaveLine caveLine = caveLines.Find(x => x.X == cave.MaxX + 1);
-            if(caveLine != null)
+            CaveLine caveLine = null;
+
+            if (caveLines.Count > 0)
+            {
+               caveLine = caveLines.Find(x => x.X == cave.MaxX + 1);
+            }
+
+            if (caveLine != null)
             {
                 if (caveLine.TryToMerge(cave.LastCaveLine))
                 {
